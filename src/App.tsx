@@ -27,7 +27,7 @@ function AppContent() {
   const { isAuthenticated, user } = useAuth();
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [iconOnly, setIconOnly] = useState(false);
+  const [iconOnly, setIconOnly] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDesktop, setIsDesktop] = useState(false);
@@ -49,7 +49,7 @@ function AppContent() {
       try {
         const prefs = JSON.parse(saved);
         setSidebarCollapsed(prefs.collapsed || false);
-        setIconOnly(prefs.iconOnly || false);
+        setIconOnly(prefs.iconOnly !== undefined ? prefs.iconOnly : true);
       } catch { /* ignore */ }
     }
   }, []);

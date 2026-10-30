@@ -73,8 +73,8 @@ export default function Sidebar({ currentPage, onPageChange, collapsed, onToggle
     >
       {/* Header */}
       <div className="p-3 sm:p-4 flex items-center gap-3 border-b border-white/30">
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
-          <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+          <img src="https://i.imgur.com/tdlwWrz.png" alt="Logo" className="w-full h-full object-cover" />
         </div>
         {!isCompact && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-hidden flex-1 min-w-0">
