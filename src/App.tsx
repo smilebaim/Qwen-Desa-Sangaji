@@ -107,14 +107,39 @@ function AppContent() {
       <div className="bg-decoration bg-decoration-1" />
       <div className="bg-decoration bg-decoration-2" />
 
-      {mobileMenuOpen && <div className="fixed inset-0 bg-black/30 z-30 lg:hidden" onClick={() => setMobileMenuOpen(false)} />}
+      {/* Mobile overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
 
+      {/* Desktop Sidebar - always visible */}
       <div className="hidden lg:block">
-        <Sidebar currentPage={currentPage} onPageChange={(page) => { setCurrentPage(page); setMobileMenuOpen(false); }} collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} iconOnly={iconOnly} onIconOnlyToggle={() => setIconOnly(!iconOnly)} />
+        <Sidebar 
+          currentPage={currentPage} 
+          onPageChange={(page) => { setCurrentPage(page); }} 
+          collapsed={sidebarCollapsed} 
+          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+          iconOnly={iconOnly} 
+          onIconOnlyToggle={() => setIconOnly(!iconOnly)} 
+        />
       </div>
 
-      <div className={`lg:hidden fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <Sidebar currentPage={currentPage} onPageChange={(page) => { setCurrentPage(page); setMobileMenuOpen(false); }} collapsed={false} onToggle={() => setMobileMenuOpen(false)} iconOnly={false} onIconOnlyToggle={() => {}} />
+      {/* Mobile Sidebar - drawer */}
+      <div className={`lg:hidden fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <Sidebar 
+          currentPage={currentPage} 
+          onPageChange={(page) => { 
+            setCurrentPage(page); 
+            setMobileMenuOpen(false); 
+          }} 
+          collapsed={false} 
+          onToggle={() => setMobileMenuOpen(false)} 
+          iconOnly={false} 
+          onIconOnlyToggle={() => {}} 
+        />
       </div>
 
       <div className="transition-all duration-300" style={{ marginLeft: isDesktop ? `${sidebarWidth}px` : '0px' }}>
