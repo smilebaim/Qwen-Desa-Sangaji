@@ -174,15 +174,7 @@ export function PekerjaanPage() {
   );
 }
 
-// ============ EKONOMI ============
-export function EkonomiPage() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{[{ label: 'PDRB Desa', value: 'Rp 45.6 M' }, { label: 'Pertumbuhan', value: '+5.8%' }, { label: 'UMKM Aktif', value: kpiData.jumlahUMKM }, { label: 'Investasi Desa', value: 'Rp 1.2 M' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-xl font-bold text-slate-800 mt-1">{card.value}</p></motion.div>))}</div>
-      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Data ekonomi di bawah ini adalah contoh.</div>
-    </div>
-  );
-}
+
 
 // ============ UMKM WITH CRUD ============
 export function UMKMPage() {
@@ -223,17 +215,7 @@ export function UMKMPage() {
   );
 }
 
-// ============ PERTANIAN & PERIKANAN ============
-export function PertanianPage() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Data Pertanian</h3><div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b border-slate-200"><th className="text-left py-3 px-3 font-semibold text-slate-600">Komoditas</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Luas</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Produksi</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Produktivitas</th></tr></thead><tbody>{agricultureData.map((row, idx) => (<tr key={idx} className="border-b border-slate-100 hover:bg-sky-50/50"><td className="py-3 px-3 text-slate-700">{row.komoditas}</td><td className="py-3 px-3 text-slate-700">{row.luas}</td><td className="py-3 px-3 text-slate-700">{row.produksi}</td><td className="py-3 px-3 text-slate-700">{row.produktivitas}</td></tr>))}</tbody></table></div></motion.div>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Data Perikanan</h3><div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b border-slate-200"><th className="text-left py-3 px-3 font-semibold text-slate-600">Komoditas</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Produksi</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Nilai Ekonomi</th></tr></thead><tbody>{fisheryData.map((row, idx) => (<tr key={idx} className="border-b border-slate-100 hover:bg-sky-50/50"><td className="py-3 px-3 text-slate-700">{row.komoditas}</td><td className="py-3 px-3 text-slate-700">{row.produksi}</td><td className="py-3 px-3 text-slate-700">{row.nilai}</td></tr>))}</tbody></table></div></motion.div>
-      </div>
-    </div>
-  );
-}
+
 
 // ============ BANTUAN SOSIAL ============
 export function BantuanPage() {

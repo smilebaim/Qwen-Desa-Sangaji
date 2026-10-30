@@ -7,13 +7,16 @@ import MapPage from './pages/MapPage';
 import Sidebar from './components/Sidebar';
 import {
   ProfilDesaPage, PendudukPage, StatistikPage, KeluargaPage, PendidikanPage,
-  KesehatanPage, PekerjaanPage, EkonomiPage, UMKMPage, PertanianPage,
+  KesehatanPage, PekerjaanPage, UMKMPage,
   AnggaranPage, BantuanPage, InfrastrukturPage, PengumumanPage,
   MarkerManagementPage, LayerManagementPage, GenericDataPage
 } from './pages/DataPages';
 import LaporanPage from './pages/LaporanPage';
 import PengaturanPage from './pages/PengaturanPage';
 import PenggunaPage from './pages/PenggunaPage';
+import GaleriPage from './pages/GaleriPage';
+import EkonomiPage from './pages/EkonomiPage';
+import PertanianPage from './pages/PertanianPage';
 import { Bell, Search, User, Menu, X } from 'lucide-react';
 
 function AppContent() {
@@ -70,7 +73,7 @@ function AppContent() {
       case 'layer': return <LayerManagementPage onNavigate={setCurrentPage} />;
       case 'pengumuman': return <PengumumanPage />;
       case 'laporan': return <LaporanPage />;
-      case 'galeri': return <GenericDataPage title="Galeri Dokumentasi" description="Dokumentasi foto dan kegiatan desa" />;
+      case 'galeri': return <GaleriPage />;
       case 'pengaturan': return <PengaturanPage />;
       case 'pengguna': return <PenggunaPage />;
       default: return <DashboardPage onNavigate={setCurrentPage} />;
