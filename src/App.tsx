@@ -11,6 +11,9 @@ import {
   AnggaranPage, BantuanPage, InfrastrukturPage, PengumumanPage,
   MarkerManagementPage, LayerManagementPage, GenericDataPage
 } from './pages/DataPages';
+import LaporanPage from './pages/LaporanPage';
+import PengaturanPage from './pages/PengaturanPage';
+import PenggunaPage from './pages/PenggunaPage';
 import { Bell, Search, User, Menu, X } from 'lucide-react';
 
 function AppContent() {
@@ -66,10 +69,10 @@ function AppContent() {
       case 'marker': return <MarkerManagementPage onNavigate={setCurrentPage} />;
       case 'layer': return <LayerManagementPage onNavigate={setCurrentPage} />;
       case 'pengumuman': return <PengumumanPage />;
-      case 'laporan': return <GenericDataPage title="Laporan & Grafik" description="Cetak dan ekspor laporan desa" />;
+      case 'laporan': return <LaporanPage />;
       case 'galeri': return <GenericDataPage title="Galeri Dokumentasi" description="Dokumentasi foto dan kegiatan desa" />;
-      case 'pengaturan': return <GenericDataPage title="Pengaturan" description="Konfigurasi sistem informasi desa" />;
-      case 'pengguna': return <GenericDataPage title="Manajemen Pengguna" description="Kelola pengguna dan hak akses" />;
+      case 'pengaturan': return <PengaturanPage />;
+      case 'pengguna': return <PenggunaPage />;
       default: return <DashboardPage onNavigate={setCurrentPage} />;
     }
   };

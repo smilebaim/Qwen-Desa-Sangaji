@@ -1,49 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Building2, MapPin, Users, Home, Search, Download, Upload, ChevronLeft, ChevronRight, FileText, Trash2, Layers, Plus } from 'lucide-react';
+import { Building2, MapPin, Users, Home, Search, Download, Upload, ChevronLeft, ChevronRight, FileText, Trash2, Layers, Plus, Edit } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
-import { villageInfo, kpiData, populationByYear, ageGroups, educationData, occupationData, umkmData, bantuanSosial, fasilitasData, pembangunanData, announcements, anggaranData, infrastructureData, agricultureData, fisheryData, familyData, demoMarkers, markerCategories } from '../data/demoData';
+import { villageInfo, kpiData, populationByYear, ageGroups, educationData, occupationData, umkmData, bantuanSosial, fasilitasData, pembangunanData, announcements, anggaranData, infrastructureData, agricultureData, fisheryData, markerCategories } from '../data/demoData';
+import { CRUDManager } from '../utils/crudManager';
+import { CRUDTable, Column } from '../components/CRUDTable';
 
-function DataTable({ columns, data, title }: { columns: { key: string; label: string; render?: (val: any, row: any) => React.ReactNode }[]; data: any[]; title: string }) {
-  const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
-  const perPage = 10;
-  const filtered = data.filter(row => Object.values(row).some(val => String(val).toLowerCase().includes(search.toLowerCase())));
-  const totalPages = Math.ceil(filtered.length / perPage);
-  const paginated = filtered.slice((page - 1) * perPage, page * perPage);
+// Initialize CRUD managers
+const pendudukManager = new CRUDManager('maba_penduduk');
+const keluargaManager = new CRUDManager('maba_keluarga');
+const umkmManager = new CRUDManager('maba_umkm');
+const infrastrukturManager = new CRUDManager('maba_infrastruktur');
+const pengumumanManager = new CRUDManager('maba_pengumuman');
 
-  return (
-    <div className="glass-card p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input type="text" placeholder="Cari..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="pl-9 pr-3 py-2 rounded-lg border border-slate-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30" />
-          </div>
-          <button className="px-3 py-2 rounded-lg bg-sky-100 text-sky-700 text-sm font-medium flex items-center gap-1"><Download className="w-4 h-4" /> Ekspor</button>
-        </div>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead><tr className="border-b border-slate-200">{columns.map(col => (<th key={col.key} className="text-left py-3 px-3 font-semibold text-slate-600">{col.label}</th>))}</tr></thead>
-          <tbody>{paginated.map((row, idx) => (<tr key={idx} className="border-b border-slate-100 hover:bg-sky-50/50 transition-colors">{columns.map(col => (<td key={col.key} className="py-3 px-3 text-slate-700">{col.render ? col.render(row[col.key], row) : row[col.key]}</td>))}</tr>))}</tbody>
-        </table>
-      </div>
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4">
-          <p className="text-xs text-slate-500">Menampilkan {(page - 1) * perPage + 1}-{Math.min(page * perPage, filtered.length)} dari {filtered.length}</p>
-          <div className="flex gap-1">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40"><ChevronLeft className="w-4 h-4" /></button>
-            <span className="px-3 py-1.5 text-xs text-slate-600">{page} / {totalPages}</span>
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-1.5 rounded-lg hover:bg-slate-100 disabled:opacity-40"><ChevronRight className="w-4 h-4" /></button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
+// ============ PROFIL DESA ============
 export function ProfilDesaPage() {
   return (
     <div className="space-y-6">
@@ -71,17 +41,96 @@ export function ProfilDesaPage() {
   );
 }
 
+// ============ PENDUDUK WITH CRUD ============
 export function PendudukPage() {
-  const sampleResidents = Array.from({ length: 25 }, (_, i) => ({ no: i + 1, nik: `8203${String(2001 + i).padStart(4, '0')}${String(190000 + i * 100).padStart(6, '0')}`, nama: ['Ahmad', 'Fatimah', 'Ibrahim', 'Siti', 'Yusuf', 'Aminah', 'Hasan', 'Khadijah', 'Omar', 'Zainab'][i % 10] + ' ' + ['Sanusi', 'Hasan', 'Ali', 'Musa', 'Binti', 'Putri', 'Rahman', 'Daud'][i % 8], jk: i % 2 === 0 ? 'L' : 'P', ttl: `Maba Sangaji, ${1960 + (i * 3) % 50}-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`, pendidikan: ['SD', 'SMP', 'SMA', 'S1', 'Tidak Sekolah'][i % 5], pekerjaan: ['Petani', 'Nelayan', 'PNS', 'Wiraswasta', 'Ibu Rumah Tangga'][i % 5], status: i % 5 === 0 ? 'Belum Kawin' : 'Kawin' }));
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    let stored = pendudukManager.getAll();
+    if (stored.length === 0) {
+      // Initialize with demo data
+      const demoData = Array.from({ length: 25 }, (_, i) => ({
+        id: i + 1,
+        nik: `8203${String(2001 + i).padStart(4, '0')}${String(190000 + i * 100).padStart(6, '0')}`,
+        nama: ['Ahmad', 'Fatimah', 'Ibrahim', 'Siti', 'Yusuf', 'Aminah', 'Hasan', 'Khadijah', 'Omar', 'Zainab'][i % 10] + ' ' + ['Sanusi', 'Hasan', 'Ali', 'Musa', 'Binti', 'Putri', 'Rahman', 'Daud'][i % 8],
+        jk: i % 2 === 0 ? 'L' : 'P',
+        ttl: `Maba Sangaji, ${1960 + (i * 3) % 50}-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
+        pendidikan: ['SD', 'SMP', 'SMA', 'S1', 'Tidak Sekolah'][i % 5],
+        pekerjaan: ['Petani', 'Nelayan', 'PNS', 'Wiraswasta', 'Ibu Rumah Tangga'][i % 5],
+        status: i % 5 === 0 ? 'Belum Kawin' : 'Kawin',
+      }));
+      pendudukManager.importData(demoData);
+      stored = pendudukManager.getAll();
+    }
+    setData(stored);
+  }, []);
+
+  const columns: Column[] = [
+    { key: 'nik', label: 'NIK', type: 'text', required: true },
+    { key: 'nama', label: 'Nama Lengkap', type: 'text', required: true },
+    { key: 'jk', label: 'Jenis Kelamin', type: 'select', required: true, options: [{ value: 'L', label: 'Laki-laki' }, { value: 'P', label: 'Perempuan' }], render: (val: string) => (<span className={`px-2 py-0.5 rounded-full text-xs font-medium ${val === 'L' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{val}</span>) },
+    { key: 'ttl', label: 'Tempat, Tanggal Lahir', type: 'text' },
+    { key: 'pendidikan', label: 'Pendidikan', type: 'select', options: [{ value: 'Tidak Sekolah', label: 'Tidak Sekolah' }, { value: 'SD', label: 'SD' }, { value: 'SMP', label: 'SMP' }, { value: 'SMA', label: 'SMA' }, { value: 'S1', label: 'S1' }] },
+    { key: 'pekerjaan', label: 'Pekerjaan', type: 'text' },
+    { key: 'status', label: 'Status', type: 'select', options: [{ value: 'Belum Kawin', label: 'Belum Kawin' }, { value: 'Kawin', label: 'Kawin' }, { value: 'Cerai', label: 'Cerai' }] },
+  ];
+
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{[{ label: 'Total Penduduk', value: kpiData.totalPenduduk, color: 'from-sky-500 to-blue-600' }, { label: 'Laki-laki', value: kpiData.lakiLaki, color: 'from-blue-500 to-indigo-600' }, { label: 'Perempuan', value: kpiData.perempuan, color: 'from-pink-500 to-rose-600' }, { label: 'Kepala Keluarga', value: kpiData.jumlahKK, color: 'from-emerald-500 to-teal-600' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value.toLocaleString('id-ID')}</p></motion.div>))}</div>
-      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Data penduduk di bawah ini adalah contoh. Bukan data resmi.</div>
-      <DataTable title="Data Penduduk" columns={[{ key: 'no', label: 'No' }, { key: 'nik', label: 'NIK' }, { key: 'nama', label: 'Nama Lengkap' }, { key: 'jk', label: 'L/P', render: (val: string) => (<span className={`px-2 py-0.5 rounded-full text-xs font-medium ${val === 'L' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}`}>{val}</span>) }, { key: 'ttl', label: 'TTL' }, { key: 'pendidikan', label: 'Pendidikan' }, { key: 'pekerjaan', label: 'Pekerjaan' }]} data={sampleResidents} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{[{ label: 'Total Penduduk', value: kpiData.totalPenduduk }, { label: 'Laki-laki', value: kpiData.lakiLaki }, { label: 'Perempuan', value: kpiData.perempuan }, { label: 'Kepala Keluarga', value: kpiData.jumlahKK }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value.toLocaleString('id-ID')}</p></motion.div>))}</div>
+      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Data dapat ditambah, edit, dan dihapus. Perubahan tersimpan di browser.</div>
+      <CRUDTable
+        title="Data Penduduk"
+        columns={columns}
+        data={data}
+        onCreate={(item) => { const newItem = pendudukManager.create(item); setData(pendudukManager.getAll()); }}
+        onUpdate={(id, item) => { pendudukManager.update(id, item); setData(pendudukManager.getAll()); }}
+        onDelete={(id) => { pendudukManager.delete(id); setData(pendudukManager.getAll()); }}
+        searchKeys={['nik', 'nama', 'pekerjaan']}
+      />
     </div>
   );
 }
 
+// ============ KELUARGA WITH CRUD ============
+export function KeluargaPage() {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    let stored = keluargaManager.getAll();
+    if (stored.length === 0) {
+      const demoData = Array.from({ length: 20 }, (_, i) => ({
+        id: i + 1,
+        noKK: `8203${String(2001 + i).padStart(4, '0')}`,
+        kepalaKeluarga: ['Ahmad Sanusi', 'Ibrahim Hasan', 'Yusuf Ali', 'Omar Musa', 'Hasan Daud'][i % 5],
+        alamat: `Dusun ${Math.floor(i / 7) + 1}, RT ${String((i % 5) + 1).padStart(2, '0')}/RW 01`,
+        jumlahAnggota: Math.floor(Math.random() * 4) + 2,
+        status: ['K sejahtera 1', 'K sejahtera 2', 'K sejahtera 3'][i % 3],
+      }));
+      keluargaManager.importData(demoData);
+      stored = keluargaManager.getAll();
+    }
+    setData(stored);
+  }, []);
+
+  const columns: Column[] = [
+    { key: 'noKK', label: 'No. KK', type: 'text', required: true },
+    { key: 'kepalaKeluarga', label: 'Kepala Keluarga', type: 'text', required: true },
+    { key: 'alamat', label: 'Alamat', type: 'textarea' },
+    { key: 'jumlahAnggota', label: 'Jumlah Anggota', type: 'number', required: true },
+    { key: 'status', label: 'Status', type: 'select', options: [{ value: 'K sejahtera 1', label: 'Keluarga Sejahtera 1' }, { value: 'K sejahtera 2', label: 'Keluarga Sejahtera 2' }, { value: 'K sejahtera 3', label: 'Keluarga Sejahtera 3' }] },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">{[{ label: 'Total KK', value: kpiData.jumlahKK }, { label: 'Rata-rata Anggota', value: '3.8' }, { label: 'KK Sejahtera', value: '89%' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value}</p></motion.div>))}</div>
+      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Data keluarga dapat ditambah, edit, dan dihapus.</div>
+      <CRUDTable title="Data Keluarga" columns={columns} data={data} onCreate={(item) => { keluargaManager.create(item); setData(keluargaManager.getAll()); }} onUpdate={(id, item) => { keluargaManager.update(id, item); setData(keluargaManager.getAll()); }} onDelete={(id) => { keluargaManager.delete(id); setData(keluargaManager.getAll()); }} searchKeys={['noKK', 'kepalaKeluarga', 'alamat']} />
+    </div>
+  );
+}
+
+// ============ STATISTIK DEMOGRAFI ============
 export function StatistikPage() {
   return (
     <div className="space-y-6">
@@ -96,39 +145,26 @@ export function StatistikPage() {
   );
 }
 
-export function KeluargaPage() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[{ label: 'Total KK', value: kpiData.jumlahKK }, { label: 'Rata-rata Anggota', value: '3.8' }, { label: 'KK Sejahtera', value: '89%' }].map((card, idx) => (
-          <motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value}</p></motion.div>
-        ))}
-      </div>
-      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Data keluarga di bawah ini adalah contoh.</div>
-      <DataTable title="Data Keluarga" columns={[{ key: 'no', label: 'No' }, { key: 'noKK', label: 'No. KK' }, { key: 'kepalaKeluarga', label: 'Kepala Keluarga' }, { key: 'alamat', label: 'Alamat' }, { key: 'jumlahAnggota', label: 'Anggota' }, { key: 'status', label: 'Status' }]} data={familyData} />
-    </div>
-  );
-}
-
+// ============ PENDIDIKAN ============
 export function PendidikanPage() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{[{ label: 'SD', value: kpiData.sd }, { label: 'SMP', value: kpiData.smp }, { label: 'SMA/SMK', value: kpiData.sma }, { label: 'Sarjana', value: kpiData.sarjana }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value.toLocaleString('id-ID')}</p></motion.div>))}</div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Tingkat Pendidikan Penduduk</h3><ResponsiveContainer width="100%" height={300}><BarChart data={educationData}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="#94a3b8" /><YAxis tick={{ fontSize: 11 }} stroke="#94a3b8" /><Tooltip contentStyle={{ borderRadius: '12px' }} /><Bar dataKey="value" radius={[4, 4, 0, 0]} name="Jumlah">{educationData.map((entry, index) => (<Cell key={`cell-${index}`} fill={entry.color} />))}</Bar></BarChart></ResponsiveContainer></motion.div>
-      <DataTable title="Fasilitas Pendidikan" columns={[{ key: 'jenis', label: 'Jenis Fasilitas' }, { key: 'jumlah', label: 'Jumlah' }]} data={fasilitasData.filter(f => ['SD', 'SMP', 'SMA', 'PAUD', 'Perpustakaan'].includes(f.jenis))} />
     </div>
   );
 }
 
+// ============ KESEHATAN ============
 export function KesehatanPage() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">{[{ label: 'Puskesmas', value: 1, icon: '🏥' }, { label: 'Pustu', value: 2, icon: '🏨' }, { label: 'Posyandu', value: 4, icon: '💊' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-5"><span className="text-2xl">{card.icon}</span><p className="text-xs text-slate-500 mt-2">{card.label}</p><p className="text-2xl font-bold text-slate-800">{card.value}</p></motion.div>))}</div>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Fasilitas Kesehatan Desa</h3><DataTable title="" columns={[{ key: 'jenis', label: 'Jenis Fasilitas' }, { key: 'jumlah', label: 'Jumlah' }]} data={fasilitasData.filter(f => ['Puskesmas', 'Pustu', 'Posyandu'].includes(f.jenis))} /></motion.div>
     </div>
   );
 }
 
+// ============ PEKERJAAN ============
 export function PekerjaanPage() {
   return (
     <div className="space-y-6">
@@ -138,6 +174,7 @@ export function PekerjaanPage() {
   );
 }
 
+// ============ EKONOMI ============
 export function EkonomiPage() {
   return (
     <div className="space-y-6">
@@ -147,26 +184,96 @@ export function EkonomiPage() {
   );
 }
 
+// ============ UMKM WITH CRUD ============
 export function UMKMPage() {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    let stored = umkmManager.getAll();
+    if (stored.length === 0) {
+      const demoData = [
+        { id: 1, nama: 'Warung Makan Bu Siti', kategori: 'Kuliner', alamat: 'Dusun 1, RT 01', pemilik: 'Siti Aminah', telepon: '081234567890', status: 'Aktif' },
+        { id: 2, nama: 'Kerajinan Anyaman', kategori: 'Kerajinan', alamat: 'Dusun 2, RT 03', pemilik: 'Fatimah', telepon: '081234567891', status: 'Aktif' },
+        { id: 3, nama: 'Tambak Ikan Pak Omar', kategori: 'Perikanan', alamat: 'Dusun 3, RT 02', pemilik: 'Omar', telepon: '081234567892', status: 'Aktif' },
+        { id: 4, nama: 'Toko Kelontong Pak Hasan', kategori: 'Perdagangan', alamat: 'Dusun 1, RT 02', pemilik: 'Hasan', telepon: '081234567893', status: 'Aktif' },
+        { id: 5, nama: 'Bengkel Motor Pak Ali', kategori: 'Jasa', alamat: 'Dusun 2, RT 01', pemilik: 'Ali', telepon: '081234567894', status: 'Aktif' },
+      ];
+      umkmManager.importData(demoData);
+      stored = umkmManager.getAll();
+    }
+    setData(stored);
+  }, []);
+
+  const columns: Column[] = [
+    { key: 'nama', label: 'Nama UMKM', type: 'text', required: true },
+    { key: 'kategori', label: 'Kategori', type: 'select', required: true, options: [{ value: 'Kuliner', label: 'Kuliner' }, { value: 'Kerajinan', label: 'Kerajinan' }, { value: 'Perikanan', label: 'Perikanan' }, { value: 'Pertanian', label: 'Pertanian' }, { value: 'Jasa', label: 'Jasa' }, { value: 'Perdagangan', label: 'Perdagangan' }] },
+    { key: 'alamat', label: 'Alamat', type: 'textarea' },
+    { key: 'pemilik', label: 'Pemilik', type: 'text', required: true },
+    { key: 'telepon', label: 'Telepon', type: 'text' },
+    { key: 'status', label: 'Status', type: 'select', options: [{ value: 'Aktif', label: 'Aktif' }, { value: 'Tidak Aktif', label: 'Tidak Aktif' }] },
+  ];
+
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">{[{ label: 'Total UMKM', value: kpiData.jumlahUMKM }, { label: 'Kategori Terbanyak', value: 'Kuliner' }, { label: 'Pertumbuhan YoY', value: '+12%' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-5"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value}</p></motion.div>))}</div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">{[{ label: 'Total UMKM', value: data.length }, { label: 'Kategori Terbanyak', value: 'Kuliner' }, { label: 'Pertumbuhan YoY', value: '+12%' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-5"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value}</p></motion.div>))}</div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">UMKM Berdasarkan Kategori</h3><ResponsiveContainer width="100%" height={300}><BarChart data={umkmData}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey="kategori" tick={{ fontSize: 11 }} stroke="#94a3b8" /><YAxis tick={{ fontSize: 11 }} stroke="#94a3b8" /><Tooltip contentStyle={{ borderRadius: '12px' }} /><Bar dataKey="jumlah" fill="#06b6d4" radius={[4, 4, 0, 0]} name="Jumlah UMKM" /></BarChart></ResponsiveContainer></motion.div>
+      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Data UMKM dapat ditambah, edit, dan dihapus.</div>
+      <CRUDTable title="Data UMKM" columns={columns} data={data} onCreate={(item) => { umkmManager.create(item); setData(umkmManager.getAll()); }} onUpdate={(id, item) => { umkmManager.update(id, item); setData(umkmManager.getAll()); }} onDelete={(id) => { umkmManager.delete(id); setData(umkmManager.getAll()); }} searchKeys={['nama', 'kategori', 'pemilik']} />
     </div>
   );
 }
 
+// ============ PERTANIAN & PERIKANAN ============
 export function PertanianPage() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Data Pertanian</h3><DataTable title="" columns={[{ key: 'komoditas', label: 'Komoditas' }, { key: 'luas', label: 'Luas' }, { key: 'produksi', label: 'Produksi' }, { key: 'produktivitas', label: 'Produktivitas' }]} data={agricultureData} /></motion.div>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Data Perikanan</h3><DataTable title="" columns={[{ key: 'komoditas', label: 'Komoditas' }, { key: 'produksi', label: 'Produksi' }, { key: 'nilai', label: 'Nilai Ekonomi' }]} data={fisheryData} /></motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Data Pertanian</h3><div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b border-slate-200"><th className="text-left py-3 px-3 font-semibold text-slate-600">Komoditas</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Luas</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Produksi</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Produktivitas</th></tr></thead><tbody>{agricultureData.map((row, idx) => (<tr key={idx} className="border-b border-slate-100 hover:bg-sky-50/50"><td className="py-3 px-3 text-slate-700">{row.komoditas}</td><td className="py-3 px-3 text-slate-700">{row.luas}</td><td className="py-3 px-3 text-slate-700">{row.produksi}</td><td className="py-3 px-3 text-slate-700">{row.produktivitas}</td></tr>))}</tbody></table></div></motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Data Perikanan</h3><div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b border-slate-200"><th className="text-left py-3 px-3 font-semibold text-slate-600">Komoditas</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Produksi</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Nilai Ekonomi</th></tr></thead><tbody>{fisheryData.map((row, idx) => (<tr key={idx} className="border-b border-slate-100 hover:bg-sky-50/50"><td className="py-3 px-3 text-slate-700">{row.komoditas}</td><td className="py-3 px-3 text-slate-700">{row.produksi}</td><td className="py-3 px-3 text-slate-700">{row.nilai}</td></tr>))}</tbody></table></div></motion.div>
       </div>
     </div>
   );
 }
 
+// ============ BANTUAN SOSIAL ============
+export function BantuanPage() {
+  return (
+    <div className="space-y-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Distribusi Bantuan Sosial</h3><ResponsiveContainer width="100%" height={300}><BarChart data={bantuanSosial}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey="jenis" tick={{ fontSize: 11 }} stroke="#94a3b8" /><YAxis tick={{ fontSize: 11 }} stroke="#94a3b8" /><Tooltip contentStyle={{ borderRadius: '12px' }} /><Bar dataKey="penerima" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Jumlah Penerima" /></BarChart></ResponsiveContainer></motion.div>
+    </div>
+  );
+}
+
+// ============ INFRASTRUKTUR WITH CRUD ============
+export function InfrastrukturPage() {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    let stored = infrastrukturManager.getAll();
+    if (stored.length === 0) {
+      infrastrukturManager.importData(infrastructureData.map((item, idx) => ({ ...item, id: idx + 1 })));
+      stored = infrastrukturManager.getAll();
+    }
+    setData(stored);
+  }, []);
+
+  const columns: Column[] = [
+    { key: 'nama', label: 'Nama Infrastruktur', type: 'text', required: true },
+    { key: 'panjang', label: 'Panjang/Jumlah', type: 'text', required: true },
+    { key: 'kondisi', label: 'Kondisi', type: 'select', required: true, options: [{ value: 'Baik', label: 'Baik' }, { value: 'Sedang', label: 'Sedang' }, { value: 'Rusak', label: 'Rusak' }], render: (val: string) => (<span className={`px-2 py-0.5 rounded-full text-xs font-medium ${val === 'Baik' ? 'bg-green-100 text-green-700' : val === 'Sedang' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{val}</span>) },
+    { key: 'tahun', label: 'Tahun', type: 'text' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">{[{ label: 'Total Infrastruktur', value: data.length }, { label: 'Kondisi Baik', value: `${Math.round((data.filter(d => d.kondisi === 'Baik').length / data.length) * 100)}%` }, { label: 'Pembangunan Baru', value: data.filter(d => d.tahun === '2023').length + ' unit' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value}</p></motion.div>))}</div>
+      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Data infrastruktur dapat ditambah, edit, dan dihapus.</div>
+      <CRUDTable title="Data Infrastruktur Desa" columns={columns} data={data} onCreate={(item) => { infrastrukturManager.create(item); setData(infrastrukturManager.getAll()); }} onUpdate={(id, item) => { infrastrukturManager.update(id, item); setData(infrastrukturManager.getAll()); }} onDelete={(id) => { infrastrukturManager.delete(id); setData(infrastrukturManager.getAll()); }} searchKeys={['nama', 'kondisi']} />
+    </div>
+  );
+}
+
+// ============ ANGGARAN ============
 export function AnggaranPage() {
   return (
     <div className="space-y-6">
@@ -181,55 +288,45 @@ export function AnggaranPage() {
   );
 }
 
-export function BantuanPage() {
-  return (
-    <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Distribusi Bantuan Sosial</h3><ResponsiveContainer width="100%" height={300}><BarChart data={bantuanSosial}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey="jenis" tick={{ fontSize: 11 }} stroke="#94a3b8" /><YAxis tick={{ fontSize: 11 }} stroke="#94a3b8" /><Tooltip contentStyle={{ borderRadius: '12px' }} /><Bar dataKey="penerima" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Jumlah Penerima" /></BarChart></ResponsiveContainer></motion.div>
-      <DataTable title="Data Penerima Bantuan Sosial" columns={[{ key: 'jenis', label: 'Jenis Bantuan' }, { key: 'penerima', label: 'Jumlah Penerima' }]} data={bantuanSosial} />
-    </div>
-  );
-}
-
-export function InfrastrukturPage() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">{[{ label: 'Total Infrastruktur', value: kpiData.infrastrukturDesa }, { label: 'Kondisi Baik', value: '78%' }, { label: 'Pembangunan Baru', value: '5 unit' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value}</p></motion.div>))}</div>
-      <DataTable title="Data Infrastruktur Desa" columns={[{ key: 'nama', label: 'Nama Infrastruktur' }, { key: 'panjang', label: 'Panjang/Jumlah' }, { key: 'kondisi', label: 'Kondisi', render: (val: string) => (<span className={`px-2 py-0.5 rounded-full text-xs font-medium ${val === 'Baik' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>{val}</span>) }, { key: 'tahun', label: 'Tahun' }]} data={infrastructureData} />
-    </div>
-  );
-}
-
+// ============ PENGUMUMAN WITH CRUD ============
 export function PengumumanPage() {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    let stored = pengumumanManager.getAll();
+    if (stored.length === 0) {
+      pengumumanManager.importData(announcements);
+      stored = pengumumanManager.getAll();
+    }
+    setData(stored);
+  }, []);
+
+  const columns: Column[] = [
+    { key: 'title', label: 'Judul', type: 'text', required: true },
+    { key: 'content', label: 'Isi Pengumuman', type: 'textarea', required: true },
+    { key: 'date', label: 'Tanggal', type: 'date', required: true },
+    { key: 'priority', label: 'Prioritas', type: 'select', required: true, options: [{ value: 'tinggi', label: 'Tinggi' }, { value: 'sedang', label: 'Sedang' }, { value: 'rendah', label: 'Rendah' }], render: (val: string) => (<span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${val === 'tinggi' ? 'bg-red-100 text-red-700' : val === 'sedang' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>{val.toUpperCase()}</span>) },
+  ];
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between"><h2 className="text-xl font-bold text-slate-800">Pengumuman Desa</h2><button className="px-4 py-2 rounded-xl gradient-primary text-white text-sm font-medium flex items-center gap-2"><Plus className="w-4 h-4" /> Buat Pengumuman</button></div>
-      {announcements.map((ann, idx) => (<motion.div key={ann.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-5"><div className="flex items-start justify-between"><div><div className="flex items-center gap-2 mb-1"><span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${ann.priority === 'tinggi' ? 'bg-red-100 text-red-700' : ann.priority === 'sedang' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>{ann.priority.toUpperCase()}</span><span className="text-xs text-slate-400">{ann.date}</span></div><h3 className="text-sm font-semibold text-slate-800">{ann.title}</h3><p className="text-sm text-slate-600 mt-1">{ann.content}</p></div></div></motion.div>))}
+    <div className="space-y-6">
+      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Pengumuman dapat ditambah, edit, dan dihapus.</div>
+      <CRUDTable title="Pengumuman Desa" columns={columns} data={data} onCreate={(item) => { pengumumanManager.create(item); setData(pengumumanManager.getAll()); }} onUpdate={(id, item) => { pengumumanManager.update(id, item); setData(pengumumanManager.getAll()); }} onDelete={(id) => { pengumumanManager.delete(id); setData(pengumumanManager.getAll()); }} searchKeys={['title', 'content']} />
     </div>
   );
 }
 
+// ============ MARKER MANAGEMENT ============
 export function MarkerManagementPage({ onNavigate }: { onNavigate: (page: string) => void }) {
-  const [markers, setMarkers] = useState(demoMarkers);
-  const [search, setSearch] = useState('');
-  const [filterCat, setFilterCat] = useState('all');
-  const filtered = markers.filter(m => { const matchSearch = m.name.toLowerCase().includes(search.toLowerCase()); const matchCat = filterCat === 'all' || m.category === filterCat; return matchSearch && matchCat; });
-  const deleteMarker = (id: number) => { if (confirm('Hapus marker ini?')) { setMarkers(prev => prev.filter(m => m.id !== id)); } };
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="text-xl font-bold text-slate-800">Manajemen Marker</h2><p className="text-sm text-slate-500">Kelola semua marker pada peta digital desa</p></div><button onClick={() => onNavigate('peta')} className="px-4 py-2 rounded-xl gradient-primary text-white text-sm font-medium flex items-center gap-2"><MapPin className="w-4 h-4" /> Buka Peta</button></div>
-      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Marker di bawah ini adalah contoh. Tambahkan marker baru melalui halaman Peta Digital.</div>
-      <div className="glass-card p-6">
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
-          <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" /><input type="text" placeholder="Cari marker..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30" /></div>
-          <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)} className="px-3 py-2 rounded-lg border border-slate-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30"><option value="all">Semua Kategori</option>{markerCategories.map(cat => (<option key={cat.id} value={cat.id}>{cat.icon} {cat.name}</option>))}</select>
-        </div>
-        <div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b border-slate-200"><th className="text-left py-3 px-3 font-semibold text-slate-600">Nama</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Kategori</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Koordinat</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Status</th><th className="text-left py-3 px-3 font-semibold text-slate-600">Aksi</th></tr></thead><tbody>{filtered.map(marker => { const cat = markerCategories.find(c => c.id === marker.category); return (<tr key={marker.id} className="border-b border-slate-100 hover:bg-sky-50/50"><td className="py-3 px-3 font-medium text-slate-700">{marker.name}</td><td className="py-3 px-3"><span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-xs">{cat?.icon} {cat?.name}</span></td><td className="py-3 px-3 text-slate-500 text-xs">{marker.lat.toFixed(4)}, {marker.lng.toFixed(4)}</td><td className="py-3 px-3"><span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs">{marker.status}</span></td><td className="py-3 px-3"><button onClick={() => deleteMarker(marker.id)} className="p-1.5 rounded-lg hover:bg-red-100 text-red-500"><Trash2 className="w-4 h-4" /></button></td></tr>); })}</tbody></table></div>
-        <p className="text-xs text-slate-500 mt-3">Menampilkan {filtered.length} dari {markers.length} marker</p>
-      </div>
+      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ Kelola marker melalui halaman Peta Digital untuk menambahkan, mengedit, dan menghapus marker dengan koordinat geografis.</div>
     </div>
   );
 }
 
+// ============ LAYER MANAGEMENT ============
 export function LayerManagementPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   const [layers] = useState([{ id: 1, name: 'Batas Administrasi Desa', type: 'Polygon', visible: true, objects: 1, color: '#0ea5e9' }, { id: 2, name: 'Jalan Desa', type: 'Polyline', visible: true, objects: 8, color: '#6b7280' }, { id: 3, name: 'Area Pertanian', type: 'Polygon', visible: true, objects: 12, color: '#84cc16' }, { id: 4, name: 'Area Perikanan', type: 'Polygon', visible: false, objects: 5, color: '#06b6d4' }, { id: 5, name: 'Zona Pembangunan', type: 'Polygon', visible: true, objects: 3, color: '#f97316' }, { id: 6, name: 'Fasilitas Umum', type: 'Marker', visible: true, objects: 15, color: '#8b5cf6' }, { id: 7, name: 'Titik Rawan Bencana', type: 'Marker', visible: false, objects: 4, color: '#ef4444' }]);
   const [visibleLayers, setVisibleLayers] = useState(layers.filter(l => l.visible).map(l => l.id));
@@ -239,17 +336,17 @@ export function LayerManagementPage({ onNavigate }: { onNavigate: (page: string)
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="text-xl font-bold text-slate-800">Manajemen Layer</h2><p className="text-sm text-slate-500">Kelola layer peta digital desa</p></div><button onClick={() => onNavigate('peta')} className="px-4 py-2 rounded-xl gradient-primary text-white text-sm font-medium flex items-center gap-2"><Layers className="w-4 h-4" /> Buka Peta</button></div>
       <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Layer di bawah ini adalah contoh untuk demonstrasi.</div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{layers.map(layer => (<motion.div key={layer.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="w-4 h-4 rounded" style={{ backgroundColor: layer.color }} /><div><p className="text-sm font-medium text-slate-700">{layer.name}</p><p className="text-xs text-slate-500">{layer.type} • {layer.objects} objek</p></div></div><label className="relative inline-flex items-center cursor-pointer"><input type="checkbox" checked={visibleLayers.includes(layer.id)} onChange={() => toggleLayer(layer.id)} className="sr-only peer" /><div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-sky-500"></div></label></div></motion.div>))}</div>
-      <div className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-3">Impor/Ekspor Layer</h3><p className="text-sm text-slate-600 mb-4">Impor data GeoJSON atau ekspor layer yang ada.</p><div className="flex gap-3"><button className="px-4 py-2 rounded-xl bg-sky-100 text-sky-700 text-sm font-medium flex items-center gap-2"><Upload className="w-4 h-4" /> Impor GeoJSON</button><button className="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-700 text-sm font-medium flex items-center gap-2"><Download className="w-4 h-4" /> Ekspor Semua Layer</button></div></div>
     </div>
   );
 }
 
+// ============ GENERIC DATA PAGE ============
 export function GenericDataPage({ title, description }: { title: string; description: string }) {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h2 className="text-xl font-bold text-slate-800">{title}</h2><p className="text-sm text-slate-500 mt-1">{description}</p></motion.div>
-      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Modul ini dalam pengembangan. Data yang ditampilkan adalah contoh.</div>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-8 text-center"><div className="w-16 h-16 rounded-2xl bg-sky-100 flex items-center justify-center mx-auto mb-4"><FileText className="w-8 h-8 text-sky-600" /></div><h3 className="text-lg font-semibold text-slate-700">Modul {title}</h3><p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">Modul ini siap untuk menerima data resmi dari Desa Maba Sangaji. Administrator dapat mengimpor data melalui fitur impor CSV/Excel.</p><div className="flex gap-3 justify-center mt-4"><button className="px-4 py-2 rounded-xl bg-sky-100 text-sky-700 text-sm font-medium flex items-center gap-2"><Upload className="w-4 h-4" /> Impor Data</button><button className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium flex items-center gap-2"><Download className="w-4 h-4" /> Unduh Template</button></div></motion.div>
+      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Modul ini dalam pengembangan.</div>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-8 text-center"><div className="w-16 h-16 rounded-2xl bg-sky-100 flex items-center justify-center mx-auto mb-4"><FileText className="w-8 h-8 text-sky-600" /></div><h3 className="text-lg font-semibold text-slate-700">Modul {title}</h3><p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">Modul ini siap untuk menerima data resmi dari Desa Maba Sangaji.</p></motion.div>
     </div>
   );
 }
