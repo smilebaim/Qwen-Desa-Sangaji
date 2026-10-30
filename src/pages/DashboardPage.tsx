@@ -39,9 +39,83 @@ interface KPICardProps {
   link: string;
   suffix?: string;
   onEdit: () => void;
+  variant?: 'default' | 'icon-right' | 'icon-large';
 }
 
-function KPICard({ label, value, icon: Icon, color, link, suffix, onEdit }: KPICardProps) {
+// Variant 1: Default (icon di kanan, compact)
+function KPICard({ label, value, icon: Icon, color, link, suffix, onEdit, variant = 'default' }: KPICardProps) {
+  if (variant === 'icon-right') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card p-3 sm:p-5 group relative overflow-hidden"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-1 truncate">{label}</p>
+            <p className="text-xl sm:text-3xl font-bold text-slate-800 truncate">
+              <AnimatedCounter target={value} />
+              {suffix || ''}
+            </p>
+          </div>
+          <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center shadow-xl flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300`}>
+            <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between">
+          <div className="flex items-center text-[10px] sm:text-xs text-sky-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span>Lihat detail</span>
+            <ArrowUpRight className="w-3 h-3 ml-1" />
+          </div>
+          <button
+            onClick={onEdit}
+            className="p-1 sm:p-1.5 rounded-lg bg-white/80 hover:bg-sky-100 text-slate-600 hover:text-sky-700 transition-all opacity-100 sm:opacity-0 group-hover:opacity-100"
+            title="Edit nilai"
+          >
+            <Edit className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (variant === 'icon-large') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card p-4 sm:p-6 group relative overflow-hidden"
+      >
+        <div className="absolute -right-4 -top-4 w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br opacity-10 group-hover:opacity-20 transition-opacity" style={{ background: `linear-gradient(135deg, var(--tw-gradient-stops))` }} />
+        <div className="relative">
+          <div className="flex items-start justify-between mb-3">
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
+              <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </div>
+            <button
+              onClick={onEdit}
+              className="p-1.5 rounded-lg bg-white/80 hover:bg-sky-100 text-slate-600 hover:text-sky-700 transition-all opacity-100 sm:opacity-0 group-hover:opacity-100"
+              title="Edit nilai"
+            >
+              <Edit className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <p className="text-xs sm:text-sm font-medium text-slate-500 mb-1">{label}</p>
+          <p className="text-2xl sm:text-4xl font-bold text-slate-800">
+            <AnimatedCounter target={value} />
+            {suffix || ''}
+          </p>
+          <div className="mt-3 flex items-center text-xs text-sky-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span>Lihat detail</span>
+            <ArrowUpRight className="w-3 h-3 ml-1" />
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Default variant
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -147,18 +221,18 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
   const formatCurrency = (value: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value);
 
   const kpiCards = [
-    { key: 'totalPenduduk', label: 'Total Penduduk', value: kpiValues.totalPenduduk, icon: Users, color: 'from-sky-500 to-blue-600', link: 'penduduk' },
-    { key: 'jumlahKK', label: 'Kepala Keluarga', value: kpiValues.jumlahKK, icon: Home, color: 'from-emerald-500 to-teal-600', link: 'keluarga' },
-    { key: 'lakiLaki', label: 'Laki-laki', value: kpiValues.lakiLaki, icon: User, color: 'from-blue-500 to-indigo-600', link: 'statistik' },
-    { key: 'perempuan', label: 'Perempuan', value: kpiValues.perempuan, icon: UserCheck, color: 'from-pink-500 to-rose-600', link: 'statistik' },
-    { key: 'usiaProduktif', label: 'Usia Produktif', value: kpiValues.usiaProduktif, icon: TrendingUp, color: 'from-violet-500 to-purple-600', link: 'statistik' },
-    { key: 'usiaSekolah', label: 'Usia Sekolah', value: kpiValues.usiaSekolah, icon: GraduationCap, color: 'from-amber-500 to-orange-600', link: 'pendidikan' },
-    { key: 'jumlahUMKM', label: 'UMKM', value: kpiValues.jumlahUMKM, icon: Store, color: 'from-cyan-500 to-sky-600', link: 'umkm' },
-    { key: 'fasilitasPendidikan', label: 'Fasilitas Pendidikan', value: kpiValues.fasilitasPendidikan, icon: Building2, color: 'from-indigo-500 to-blue-600', link: 'pendidikan' },
-    { key: 'fasilitasKesehatan', label: 'Fasilitas Kesehatan', value: kpiValues.fasilitasKesehatan, icon: Heart, color: 'from-red-500 to-pink-600', link: 'kesehatan' },
-    { key: 'infrastrukturDesa', label: 'Infrastruktur', value: kpiValues.infrastrukturDesa, icon: Landmark, color: 'from-slate-500 to-gray-600', link: 'infrastruktur' },
-    { key: 'jumlahProgram', label: 'Program Desa', value: kpiValues.jumlahProgram, icon: Activity, color: 'from-teal-500 to-emerald-600', link: 'anggaran' },
-    { key: 'realisasiAnggaran', label: 'Realisasi Anggaran', value: Math.round(kpiValues.realisasiAnggaran / 1000000), icon: Landmark, color: 'from-green-500 to-emerald-600', link: 'anggaran', suffix: ' Jt' },
+    { key: 'totalPenduduk', label: 'Total Penduduk', value: kpiValues.totalPenduduk, icon: Users, color: 'from-sky-500 to-blue-600', link: 'penduduk', variant: 'icon-large' as const },
+    { key: 'jumlahKK', label: 'Kepala Keluarga', value: kpiValues.jumlahKK, icon: Home, color: 'from-emerald-500 to-teal-600', link: 'keluarga', variant: 'icon-right' as const },
+    { key: 'lakiLaki', label: 'Laki-laki', value: kpiValues.lakiLaki, icon: User, color: 'from-blue-500 to-indigo-600', link: 'statistik', variant: 'icon-right' as const },
+    { key: 'perempuan', label: 'Perempuan', value: kpiValues.perempuan, icon: UserCheck, color: 'from-pink-500 to-rose-600', link: 'statistik', variant: 'default' as const },
+    { key: 'usiaProduktif', label: 'Usia Produktif', value: kpiValues.usiaProduktif, icon: TrendingUp, color: 'from-violet-500 to-purple-600', link: 'statistik', variant: 'icon-right' as const },
+    { key: 'usiaSekolah', label: 'Usia Sekolah', value: kpiValues.usiaSekolah, icon: GraduationCap, color: 'from-amber-500 to-orange-600', link: 'pendidikan', variant: 'default' as const },
+    { key: 'jumlahUMKM', label: 'UMKM', value: kpiValues.jumlahUMKM, icon: Store, color: 'from-cyan-500 to-sky-600', link: 'umkm', variant: 'icon-large' as const },
+    { key: 'fasilitasPendidikan', label: 'Fasilitas Pendidikan', value: kpiValues.fasilitasPendidikan, icon: Building2, color: 'from-indigo-500 to-blue-600', link: 'pendidikan', variant: 'default' as const },
+    { key: 'fasilitasKesehatan', label: 'Fasilitas Kesehatan', value: kpiValues.fasilitasKesehatan, icon: Heart, color: 'from-red-500 to-pink-600', link: 'kesehatan', variant: 'icon-right' as const },
+    { key: 'infrastrukturDesa', label: 'Infrastruktur', value: kpiValues.infrastrukturDesa, icon: Landmark, color: 'from-slate-500 to-gray-600', link: 'infrastruktur', variant: 'default' as const },
+    { key: 'jumlahProgram', label: 'Program Desa', value: kpiValues.jumlahProgram, icon: Activity, color: 'from-teal-500 to-emerald-600', link: 'anggaran', variant: 'icon-right' as const },
+    { key: 'realisasiAnggaran', label: 'Realisasi Anggaran', value: Math.round(kpiValues.realisasiAnggaran / 1000000), icon: Landmark, color: 'from-green-500 to-emerald-600', link: 'anggaran', suffix: ' Jt', variant: 'icon-large' as const },
   ];
 
   return (
@@ -223,6 +297,7 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
             color={card.color}
             link={card.link}
             suffix={card.suffix}
+            variant={card.variant}
             onEdit={() => handleEditKPI(card.key, card.label, card.value)}
           />
         ))}
