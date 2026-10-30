@@ -145,34 +145,11 @@ export function StatistikPage() {
   );
 }
 
-// ============ PENDIDIKAN ============
-export function PendidikanPage() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{[{ label: 'SD', value: kpiData.sd }, { label: 'SMP', value: kpiData.smp }, { label: 'SMA/SMK', value: kpiData.sma }, { label: 'Sarjana', value: kpiData.sarjana }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-2xl font-bold text-slate-800 mt-1">{card.value.toLocaleString('id-ID')}</p></motion.div>))}</div>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Tingkat Pendidikan Penduduk</h3><ResponsiveContainer width="100%" height={300}><BarChart data={educationData}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="#94a3b8" /><YAxis tick={{ fontSize: 11 }} stroke="#94a3b8" /><Tooltip contentStyle={{ borderRadius: '12px' }} /><Bar dataKey="value" radius={[4, 4, 0, 0]} name="Jumlah">{educationData.map((entry, index) => (<Cell key={`cell-${index}`} fill={entry.color} />))}</Bar></BarChart></ResponsiveContainer></motion.div>
-    </div>
-  );
-}
 
-// ============ KESEHATAN ============
-export function KesehatanPage() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">{[{ label: 'Puskesmas', value: 1, icon: '🏥' }, { label: 'Pustu', value: 2, icon: '🏨' }, { label: 'Posyandu', value: 4, icon: '💊' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-5"><span className="text-2xl">{card.icon}</span><p className="text-xs text-slate-500 mt-2">{card.label}</p><p className="text-2xl font-bold text-slate-800">{card.value}</p></motion.div>))}</div>
-    </div>
-  );
-}
 
-// ============ PEKERJAAN ============
-export function PekerjaanPage() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">{[{ label: 'Total Angkatan Kerja', value: '2,456' }, { label: 'Tingkat Pengangguran', value: '3.2%' }, { label: 'Sektor Dominan', value: 'Pertanian' }, { label: 'Pendapatan Rata-rata', value: 'Rp 2.5 Jt/bln' }].map((card, idx) => (<motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-4"><p className="text-xs text-slate-500">{card.label}</p><p className="text-xl font-bold text-slate-800 mt-1">{card.value}</p></motion.div>))}</div>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Distribusi Pekerjaan</h3><ResponsiveContainer width="100%" height={300}><BarChart data={occupationData}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="#94a3b8" /><YAxis tick={{ fontSize: 11 }} stroke="#94a3b8" /><Tooltip contentStyle={{ borderRadius: '12px' }} /><Bar dataKey="value" fill="#06b6d4" radius={[4, 4, 0, 0]} name="Jumlah" /></BarChart></ResponsiveContainer></motion.div>
-    </div>
-  );
-}
+
+
+
 
 
 
@@ -217,14 +194,7 @@ export function UMKMPage() {
 
 
 
-// ============ BANTUAN SOSIAL ============
-export function BantuanPage() {
-  return (
-    <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6"><h3 className="text-lg font-semibold text-slate-800 mb-4">Distribusi Bantuan Sosial</h3><ResponsiveContainer width="100%" height={300}><BarChart data={bantuanSosial}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey="jenis" tick={{ fontSize: 11 }} stroke="#94a3b8" /><YAxis tick={{ fontSize: 11 }} stroke="#94a3b8" /><Tooltip contentStyle={{ borderRadius: '12px' }} /><Bar dataKey="penerima" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Jumlah Penerima" /></BarChart></ResponsiveContainer></motion.div>
-    </div>
-  );
-}
+
 
 // ============ INFRASTRUKTUR WITH CRUD ============
 export function InfrastrukturPage() {
@@ -298,29 +268,9 @@ export function PengumumanPage() {
   );
 }
 
-// ============ MARKER MANAGEMENT ============
-export function MarkerManagementPage({ onNavigate }: { onNavigate: (page: string) => void }) {
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="text-xl font-bold text-slate-800">Manajemen Marker</h2><p className="text-sm text-slate-500">Kelola semua marker pada peta digital desa</p></div><button onClick={() => onNavigate('peta')} className="px-4 py-2 rounded-xl gradient-primary text-white text-sm font-medium flex items-center gap-2"><MapPin className="w-4 h-4" /> Buka Peta</button></div>
-      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ Kelola marker melalui halaman Peta Digital untuk menambahkan, mengedit, dan menghapus marker dengan koordinat geografis.</div>
-    </div>
-  );
-}
 
-// ============ LAYER MANAGEMENT ============
-export function LayerManagementPage({ onNavigate }: { onNavigate: (page: string) => void }) {
-  const [layers] = useState([{ id: 1, name: 'Batas Administrasi Desa', type: 'Polygon', visible: true, objects: 1, color: '#0ea5e9' }, { id: 2, name: 'Jalan Desa', type: 'Polyline', visible: true, objects: 8, color: '#6b7280' }, { id: 3, name: 'Area Pertanian', type: 'Polygon', visible: true, objects: 12, color: '#84cc16' }, { id: 4, name: 'Area Perikanan', type: 'Polygon', visible: false, objects: 5, color: '#06b6d4' }, { id: 5, name: 'Zona Pembangunan', type: 'Polygon', visible: true, objects: 3, color: '#f97316' }, { id: 6, name: 'Fasilitas Umum', type: 'Marker', visible: true, objects: 15, color: '#8b5cf6' }, { id: 7, name: 'Titik Rawan Bencana', type: 'Marker', visible: false, objects: 4, color: '#ef4444' }]);
-  const [visibleLayers, setVisibleLayers] = useState(layers.filter(l => l.visible).map(l => l.id));
-  const toggleLayer = (id: number) => { setVisibleLayers(prev => prev.includes(id) ? prev.filter(l => l !== id) : [...prev, id]); };
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="text-xl font-bold text-slate-800">Manajemen Layer</h2><p className="text-sm text-slate-500">Kelola layer peta digital desa</p></div><button onClick={() => onNavigate('peta')} className="px-4 py-2 rounded-xl gradient-primary text-white text-sm font-medium flex items-center gap-2"><Layers className="w-4 h-4" /> Buka Peta</button></div>
-      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">⚡ DATA DEMO — Layer di bawah ini adalah contoh untuk demonstrasi.</div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{layers.map(layer => (<motion.div key={layer.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="w-4 h-4 rounded" style={{ backgroundColor: layer.color }} /><div><p className="text-sm font-medium text-slate-700">{layer.name}</p><p className="text-xs text-slate-500">{layer.type} • {layer.objects} objek</p></div></div><label className="relative inline-flex items-center cursor-pointer"><input type="checkbox" checked={visibleLayers.includes(layer.id)} onChange={() => toggleLayer(layer.id)} className="sr-only peer" /><div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-sky-500"></div></label></div></motion.div>))}</div>
-    </div>
-  );
-}
+
+
 
 // ============ GENERIC DATA PAGE ============
 export function GenericDataPage({ title, description }: { title: string; description: string }) {

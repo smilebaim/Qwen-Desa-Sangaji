@@ -6,11 +6,15 @@ import DashboardPage from './pages/DashboardPage';
 import MapPage from './pages/MapPage';
 import Sidebar from './components/Sidebar';
 import {
-  ProfilDesaPage, PendudukPage, StatistikPage, KeluargaPage, PendidikanPage,
-  KesehatanPage, PekerjaanPage, UMKMPage,
-  AnggaranPage, BantuanPage, InfrastrukturPage, PengumumanPage,
-  MarkerManagementPage, LayerManagementPage, GenericDataPage
+  ProfilDesaPage, PendudukPage, StatistikPage, KeluargaPage, UMKMPage,
+  AnggaranPage, InfrastrukturPage, PengumumanPage, GenericDataPage
 } from './pages/DataPages';
+import PendidikanPage from './pages/PendidikanPage';
+import KesehatanPage from './pages/KesehatanPage';
+import PekerjaanPage from './pages/PekerjaanPage';
+import BantuanPage from './pages/BantuanPage';
+import MarkerManagementPage from './pages/MarkerManagementPage';
+import LayerManagementPage from './pages/LayerManagementPage';
 import LaporanPage from './pages/LaporanPage';
 import PengaturanPage from './pages/PengaturanPage';
 import PenggunaPage from './pages/PenggunaPage';
