@@ -70,18 +70,18 @@ export default function LaporanPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {summaryData.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-5">
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center`}>
-                  <Icon className="w-5 h-5 text-white" />
+            <motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="glass-card p-3 sm:p-5">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center flex-shrink-0`}>
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <div>
-                  <p className="text-xs text-slate-500">{card.label}</p>
-                  <p className="text-xl font-bold text-slate-800">{card.value.toLocaleString('id-ID')}</p>
+                <div className="min-w-0">
+                  <p className="text-[10px] sm:text-xs text-slate-500 truncate">{card.label}</p>
+                  <p className="text-sm sm:text-xl font-bold text-slate-800 truncate">{card.value.toLocaleString('id-ID')}</p>
                 </div>
               </div>
             </motion.div>
@@ -94,10 +94,10 @@ export default function LaporanPage() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Distribusi Pendidikan</h3>
-          <ResponsiveContainer width="100%" height={280}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Distribusi Pendidikan</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie data={educationData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`} labelLine={false}>
                 {educationData.map((entry, index) => (<Cell key={`cell-${index}`} fill={entry.color} />))}
@@ -108,9 +108,9 @@ export default function LaporanPage() {
           </ResponsiveContainer>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Distribusi Pekerjaan</h3>
-          <ResponsiveContainer width="100%" height={280}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Distribusi Pekerjaan</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={occupationData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="#94a3b8" angle={-30} textAnchor="end" height={60} />
@@ -121,9 +121,9 @@ export default function LaporanPage() {
           </ResponsiveContainer>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">UMKM per Kategori</h3>
-          <ResponsiveContainer width="100%" height={280}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">UMKM per Kategori</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={umkmData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="kategori" tick={{ fontSize: 11 }} stroke="#94a3b8" />
@@ -134,9 +134,9 @@ export default function LaporanPage() {
           </ResponsiveContainer>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Bantuan Sosial</h3>
-          <ResponsiveContainer width="100%" height={280}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Bantuan Sosial</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={bantuanSosial} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis type="number" tick={{ fontSize: 11 }} stroke="#94a3b8" />

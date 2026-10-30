@@ -46,31 +46,31 @@ function KPICard({ label, value, icon: Icon, color, link, suffix, onEdit }: KPIC
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card p-5 group relative"
+      className="glass-card p-3 sm:p-5 group relative"
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-xs font-medium text-slate-500 mb-1">{label}</p>
-          <p className="text-2xl font-bold text-slate-800">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-0.5 sm:mb-1 truncate">{label}</p>
+          <p className="text-lg sm:text-2xl font-bold text-slate-800 truncate">
             <AnimatedCounter target={value} />
             {suffix || ''}
           </p>
         </div>
-        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
-          <Icon className="w-5 h-5 text-white" />
+        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg flex-shrink-0`}>
+          <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-between">
-        <div className="flex items-center text-xs text-sky-600 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="mt-2 sm:mt-3 flex items-center justify-between">
+        <div className="flex items-center text-[10px] sm:text-xs text-sky-600 opacity-0 group-hover:opacity-100 transition-opacity">
           <span>Lihat detail</span>
           <ArrowUpRight className="w-3 h-3 ml-1" />
         </div>
         <button
           onClick={onEdit}
-          className="p-1.5 rounded-lg bg-white/80 hover:bg-sky-100 text-slate-600 hover:text-sky-700 transition-all opacity-0 group-hover:opacity-100"
+          className="p-1 sm:p-1.5 rounded-lg bg-white/80 hover:bg-sky-100 text-slate-600 hover:text-sky-700 transition-all opacity-100 sm:opacity-0 group-hover:opacity-100"
           title="Edit nilai"
         >
-          <Edit className="w-3.5 h-3.5" />
+          <Edit className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         </button>
       </div>
     </motion.div>
@@ -213,7 +213,7 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
         {kpiCards.map((card) => (
           <KPICard
             key={card.key}
@@ -264,10 +264,10 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Pertumbuhan Penduduk</h3>
-          <ResponsiveContainer width="100%" height={250}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Pertumbuhan Penduduk</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={populationByYear}>
               <defs>
                 <linearGradient id="colorPop" x1="0" y1="0" x2="0" y2="1">
@@ -284,9 +284,9 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
           </ResponsiveContainer>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Tingkat Pendidikan</h3>
-          <ResponsiveContainer width="100%" height={250}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Tingkat Pendidikan</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie data={educationData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value">
                 {educationData.map((entry, index) => (<Cell key={`cell-${index}`} fill={entry.color} />))}
@@ -298,10 +298,10 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Anggaran & Realisasi (Juta Rp)</h3>
-          <ResponsiveContainer width="100%" height={250}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Anggaran & Realisasi (Juta Rp)</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={anggaranData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="bulan" tick={{ fontSize: 11 }} stroke="#94a3b8" />
@@ -314,9 +314,9 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
           </ResponsiveContainer>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Jenis Pekerjaan</h3>
-          <ResponsiveContainer width="100%" height={250}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Jenis Pekerjaan</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={occupationData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis type="number" tick={{ fontSize: 11 }} stroke="#94a3b8" />
@@ -329,19 +329,19 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
       </div>
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="glass-card p-6 lg:col-span-2">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Progres Pembangunan Desa</h3>
-          <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="glass-card p-3 sm:p-6 lg:col-span-2">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Progres Pembangunan Desa</h3>
+          <div className="space-y-3 sm:space-y-4">
             {pembangunanData.slice(0, 5).map((item, index) => (
               <div key={index}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm font-medium text-slate-700">{item.nama}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1 sm:mb-1.5">
+                  <span className="text-xs sm:text-sm font-medium text-slate-700 truncate">{item.nama}</span>
                   <div className="flex items-center gap-2">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${item.status === 'Selesai' ? 'bg-green-100 text-green-700' : 'bg-sky-100 text-sky-700'}`}>
+                    <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full ${item.status === 'Selesai' ? 'bg-green-100 text-green-700' : 'bg-sky-100 text-sky-700'}`}>
                       {item.status}
                     </span>
-                    <span className="text-sm font-semibold text-slate-600">{item.progres}%</span>
+                    <span className="text-xs sm:text-sm font-semibold text-slate-600">{item.progres}%</span>
                   </div>
                 </div>
                 <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
@@ -357,8 +357,8 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Aktivitas Terbaru</h3>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="glass-card p-3 sm:p-6">
+          <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Aktivitas Terbaru</h3>
           <div className="space-y-3">
             {recentActivities.map((activity) => (
               <div key={activity.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/50 transition-colors">
@@ -379,20 +379,20 @@ export default function DashboardPage({ onNavigate }: { onNavigate: (page: strin
       </div>
 
       {/* Budget Summary */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }} className="glass-card p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Ringkasan Anggaran Desa 2024</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4 rounded-xl bg-sky-50">
-            <p className="text-sm text-slate-500">Total Anggaran</p>
-            <p className="text-xl font-bold text-sky-700 mt-1">{formatCurrency(kpiValues.totalAnggaran)}</p>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }} className="glass-card p-3 sm:p-6">
+        <h3 className="text-sm sm:text-lg font-semibold text-slate-800 mb-2 sm:mb-4">Ringkasan Anggaran Desa 2024</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
+          <div className="text-center p-3 sm:p-4 rounded-xl bg-sky-50">
+            <p className="text-[10px] sm:text-sm text-slate-500">Total Anggaran</p>
+            <p className="text-sm sm:text-xl font-bold text-sky-700 mt-1 truncate">{formatCurrency(kpiValues.totalAnggaran)}</p>
           </div>
-          <div className="text-center p-4 rounded-xl bg-emerald-50">
-            <p className="text-sm text-slate-500">Realisasi</p>
-            <p className="text-xl font-bold text-emerald-700 mt-1">{formatCurrency(kpiValues.realisasiAnggaran)}</p>
+          <div className="text-center p-3 sm:p-4 rounded-xl bg-emerald-50">
+            <p className="text-[10px] sm:text-sm text-slate-500">Realisasi</p>
+            <p className="text-sm sm:text-xl font-bold text-emerald-700 mt-1 truncate">{formatCurrency(kpiValues.realisasiAnggaran)}</p>
           </div>
-          <div className="text-center p-4 rounded-xl bg-violet-50">
-            <p className="text-sm text-slate-500">Persentase Pembangunan</p>
-            <p className="text-xl font-bold text-violet-700 mt-1">{kpiValues.persentasePembangunan}%</p>
+          <div className="text-center p-3 sm:p-4 rounded-xl bg-violet-50">
+            <p className="text-[10px] sm:text-sm text-slate-500">Persentase Pembangunan</p>
+            <p className="text-sm sm:text-xl font-bold text-violet-700 mt-1">{kpiValues.persentasePembangunan}%</p>
           </div>
         </div>
       </motion.div>

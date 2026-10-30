@@ -100,12 +100,12 @@ export default function MapPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-120px)] relative">
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[1000] px-4 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-700 text-xs font-medium">
-        ⚡ MODE DEMO — Data contoh, bukan lokasi resmi
+    <div className="h-[calc(100vh-100px)] sm:h-[calc(100vh-120px)] relative">
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[1000] px-2 sm:px-4 py-1 sm:py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-700 text-[10px] sm:text-xs font-medium whitespace-nowrap">
+        ⚡ MODE DEMO — Data contoh
       </div>
 
-      <MapContainer center={defaultCenter} zoom={14} className="w-full h-full rounded-2xl" ref={mapRef}>
+      <MapContainer center={defaultCenter} zoom={14} className="w-full h-full rounded-xl sm:rounded-2xl" ref={mapRef}>
         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <MapClickHandler onMapClick={handleMapClick} isAdding={isAdding} />
         {filteredMarkers.map(marker => {
@@ -128,7 +128,7 @@ export default function MapPage() {
 
       <AnimatePresence>
         {showPanel && (
-          <motion.div initial={{ x: -300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -300, opacity: 0 }} className="absolute top-12 left-3 z-[1000] w-72 glass-card p-4 max-h-[calc(100%-80px)] overflow-y-auto">
+          <motion.div initial={{ x: -300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -300, opacity: 0 }} className="absolute top-10 sm:top-12 left-2 sm:left-3 z-[1000] w-[calc(100%-16px)] sm:w-72 glass-card p-3 sm:p-4 max-h-[calc(100%-60px)] sm:max-h-[calc(100%-80px)] overflow-y-auto">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-slate-800 text-sm">Panel Kontrol Peta</h3>
               <button onClick={() => setShowPanel(false)} className="p-1 rounded-lg hover:bg-white/60"><X className="w-4 h-4 text-slate-500" /></button>
@@ -177,11 +177,11 @@ export default function MapPage() {
         <button onClick={() => setShowPanel(true)} className="absolute top-12 left-3 z-[1000] p-2 glass-card rounded-xl"><Layers className="w-5 h-5 text-slate-600" /></button>
       )}
 
-      <div className="absolute top-12 right-3 z-[1000] space-y-2">
-        <button onClick={() => mapRef.current?.zoomIn()} className="p-2 glass-card rounded-xl hover:bg-white/90 transition-colors"><ZoomIn className="w-4 h-4 text-slate-600" /></button>
-        <button onClick={() => mapRef.current?.zoomOut()} className="p-2 glass-card rounded-xl hover:bg-white/90 transition-colors"><ZoomOut className="w-4 h-4 text-slate-600" /></button>
-        <button onClick={() => mapRef.current?.setView(defaultCenter, 14)} className="p-2 glass-card rounded-xl hover:bg-white/90 transition-colors" title="Kembali ke tampilan awal"><Crosshair className="w-4 h-4 text-slate-600" /></button>
-        <button onClick={() => { if (document.fullscreenElement) { document.exitFullscreen(); } else { document.documentElement.requestFullscreen(); } }} className="p-2 glass-card rounded-xl hover:bg-white/90 transition-colors" title="Layar penuh"><Maximize2 className="w-4 h-4 text-slate-600" /></button>
+      <div className="absolute top-10 sm:top-12 right-2 sm:right-3 z-[1000] space-y-1.5 sm:space-y-2">
+        <button onClick={() => mapRef.current?.zoomIn()} className="p-1.5 sm:p-2 glass-card rounded-lg sm:rounded-xl hover:bg-white/90 transition-colors"><ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600" /></button>
+        <button onClick={() => mapRef.current?.zoomOut()} className="p-1.5 sm:p-2 glass-card rounded-lg sm:rounded-xl hover:bg-white/90 transition-colors"><ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600" /></button>
+        <button onClick={() => mapRef.current?.setView(defaultCenter, 14)} className="p-1.5 sm:p-2 glass-card rounded-lg sm:rounded-xl hover:bg-white/90 transition-colors" title="Kembali ke tampilan awal"><Crosshair className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600" /></button>
+        <button onClick={() => { if (document.fullscreenElement) { document.exitFullscreen(); } else { document.documentElement.requestFullscreen(); } }} className="p-1.5 sm:p-2 glass-card rounded-lg sm:rounded-xl hover:bg-white/90 transition-colors" title="Layar penuh"><Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600" /></button>
       </div>
 
       {isAdding && newMarkerForm.lat !== 0 && (

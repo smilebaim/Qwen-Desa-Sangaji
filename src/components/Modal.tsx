@@ -21,7 +21,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-2 sm:p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -33,12 +33,12 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className={`relative glass-card p-6 w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto`}
+            className={`relative glass-card p-4 sm:p-6 w-full ${sizeClasses[size]} max-h-[95vh] sm:max-h-[90vh] overflow-y-auto mx-auto`}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
-              <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100 transition-colors">
-                <X className="w-5 h-5 text-slate-500" />
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 truncate pr-2">{title}</h3>
+              <button onClick={onClose} className="p-1.5 sm:p-1 rounded-lg hover:bg-slate-100 transition-colors flex-shrink-0">
+                <X className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500" />
               </button>
             </div>
             {children}

@@ -46,12 +46,13 @@ export default function Sidebar({ currentPage, onPageChange, collapsed, onToggle
   const { logout, user } = useAuth();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const isCompact = collapsed || iconOnly;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
 
   return (
     <motion.aside
-      animate={{ width: isCompact ? 72 : 280 }}
+      animate={{ width: isMobile ? 280 : (isCompact ? 72 : 280) }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="sidebar-glass fixed left-0 top-0 h-full z-40 flex flex-col overflow-hidden"
+      className="sidebar-glass fixed left-0 top-0 h-full z-40 flex flex-col overflow-hidden w-[280px] lg:w-auto"
     >
       <div className="p-4 flex items-center gap-3 border-b border-white/30">
         <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">

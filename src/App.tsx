@@ -31,12 +31,16 @@ function AppContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDesktop, setIsDesktop] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
+    const checkScreen = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+    return () => window.removeEventListener('resize', checkScreen);
   }, []);
 
   useEffect(() => {
@@ -114,32 +118,32 @@ function AppContent() {
       </div>
 
       <div className="transition-all duration-300" style={{ marginLeft: isDesktop ? `${sidebarWidth}px` : '0px' }}>
-        <header className="sticky top-0 z-20 glass border-b border-white/30 px-4 lg:px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 rounded-xl hover:bg-white/60">{mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}</button>
-              <div>
-                <h2 className="text-lg font-bold text-slate-800">{getPageTitle()}</h2>
-                <p className="text-xs text-slate-500 hidden sm:block">Desa Maba Sangaji — Halmahera Timur</p>
+        <header className="sticky top-0 z-20 glass border-b border-white/30 px-3 sm:px-4 lg:px-6 py-2 sm:py-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 rounded-xl hover:bg-white/60 flex-shrink-0">{mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}</button>
+              <div className="min-w-0">
+                <h2 className="text-sm sm:text-base lg:text-lg font-bold text-slate-800 truncate">{getPageTitle()}</h2>
+                <p className="text-[10px] sm:text-xs text-slate-500 hidden sm:block truncate">Desa Maba Sangaji — Halmahera Timur</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 flex-shrink-0">
               <div className="hidden md:flex items-center">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input type="text" placeholder="Cari..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 pr-4 py-2 w-48 lg:w-64 rounded-xl border border-slate-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30" />
                 </div>
               </div>
-              <button className="relative p-2 rounded-xl hover:bg-white/60 transition-colors"><Bell className="w-5 h-5 text-slate-600" /><span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" /></button>
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-                <div className="w-8 h-8 rounded-xl gradient-primary flex items-center justify-center"><User className="w-4 h-4 text-white" /></div>
-                <div className="hidden sm:block"><p className="text-xs font-semibold text-slate-700">{user?.name}</p><p className="text-[10px] text-slate-400">{user?.role}</p></div>
+              <button className="relative p-2 rounded-xl hover:bg-white/60 transition-colors"><Bell className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" /><span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" /></button>
+              <div className="flex items-center gap-1 sm:gap-2 pl-1 sm:pl-2 border-l border-slate-200">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl gradient-primary flex items-center justify-center"><User className="w-3 h-3 sm:w-4 sm:h-4 text-white" /></div>
+                <div className="hidden sm:block"><p className="text-[10px] sm:text-xs font-semibold text-slate-700 truncate max-w-[80px] lg:max-w-none">{user?.name}</p><p className="text-[9px] sm:text-[10px] text-slate-400">{user?.role}</p></div>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="p-4 lg:p-6 relative z-10">
+        <main className="p-3 sm:p-4 lg:p-6 relative z-10">
           <AnimatePresence mode="wait">
             <motion.div key={currentPage} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
               {renderPage()}
